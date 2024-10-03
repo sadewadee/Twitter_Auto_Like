@@ -1,3 +1,5 @@
+let likeCounter = 0; // Menghitung jumlah tombol like yang diklik
+
 function randomDelay(min, max) {
   return Math.floor(Math.random() * (max - min + 1)) + min;
 }
@@ -10,14 +12,23 @@ function scrollPage() {
 }
 
 function likePosts() {
-  var buttons = document.querySelectorAll('[data-testid="like"]');
+  var buttons = document.querySelectorAll('button[data-testid="like"]');
   
   buttons.forEach((button, index) => {
-    // Pastikan tidak mengklik tombol "Unlike" dengan memeriksa atribut data-testid dan aria-label
-    if (!button.dataset.testid.includes('unlike') && !button.ariaLabel.toLowerCase().includes('liked')) {
+    // Cek tombol apakah itu tombol "Like" atau sudah berubah menjadi "Unlike"
+    if (button.getAttribute('aria-label') && !button.getAttribute('aria-label').toLowerCase().includes('liked')) {
       setTimeout(() => {
         button.click();
-        console.log('Tombol like diklik');
+        likeCounter++; // Tambahkan penghitung setelah tombol di-klik
+        console.log('Tombol like diklik, total klik: ' + likeCounter);
+
+        // Jika sudah mencapai 100 klik, beri jeda 20 detik
+        if (likeCounter % 100 === 0) {
+          console.log('Menunggu 20 detik sebelum melanjutkan...');
+          setTimeout(() => {
+            console.log('Lanjutkan klik setelah 20 detik');
+          }, 20000); // Jeda 20 detik
+        }
       }, randomDelay(3000, 5000) * index); // Jeda lebih lambat, antara 3-5 detik per tombol
     }
   });
